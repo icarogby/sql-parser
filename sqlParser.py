@@ -8,7 +8,7 @@ class Parser():
         self.tokens = self.lexer(word)
     
     def lexer(self, word):
-        for i in word:
+        for i in word.split(' '):
             if i in self.alphabet:
                 self.tokens.append(i)
             else:
