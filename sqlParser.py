@@ -1,22 +1,23 @@
 from sqlAlphabet import getAlphabet
 
 class Parser():
-    tokens = []
+    tokens = None
     alphabet = getAlphabet()
 
     def __init__(self, word) -> None:
         self.tokens = self.lexer(word)
     
     def lexer(self, word):
-        for i in word.split(' '):
-            if i in self.alphabet:
-                self.tokens.append(i)
-            else:
+        for i in word:
+            if i not in self.alphabet:
                 raise Exception("Symbol not in alphabet")
-        
-        return self.tokens
+            
+        for token in word.split(' '):
+            yield token
     
-    def nextToken(self):
-        return True
-
-x = Parser("hello")
+    def getToken(self):
+        return next(self.tokens)
+    
+top = Parser("select from table")
+print(top.getToken())
+print(top.getToken())
