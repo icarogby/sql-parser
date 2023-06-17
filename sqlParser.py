@@ -1,23 +1,49 @@
 from sqlAlphabet import getAlphabet
 
 class Parser():
-    tokens = None
+    tokens = []
+    i = -1
     alphabet = getAlphabet()
 
     def __init__(self, word) -> None:
-        self.tokens = self.lexer(word)
+        self.lexer(word)
     
     def lexer(self, word):
-        for i in word:
-            if i not in self.alphabet:
+        reading = False
+        begin = 0
+
+        for i in range(len(word)):
+            if word[i] not in self.alphabet:
                 raise Exception("Symbol not in alphabet")
-            
-        for token in word.split(' '):
-            yield token
-    
+
+            if reading:
+                if word[i] in "=*()[],; ":
+                    self.tokens.append(word[begin:i])
+
+                    if word[i] != " ":
+                        self.tokens.append(word[i])
+                    
+                    reading = False
+
+            else:
+                if word[i] == " ":
+                    pass
+                elif word[i] in "=*()[],;":
+                    self.tokens.append(word[i])
+                else:
+                    reading = True
+                    begin = i
+
     def getToken(self):
-        return next(self.tokens)
+        self.i += 1
+
+        if self.i < len(self.tokens):
+            return self.tokens[self.i]
+        else:
+            raise Exception("No more tokens")
     
-top = Parser("select from table")
-print(top.getToken())
-print(top.getToken())
+    def printTokens(self):
+        print(self.tokens)
+    
+top = Parser("SELECT idaqui [, idaqui]* FROM idaqui;")
+top.printTokens()
