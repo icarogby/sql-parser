@@ -5,7 +5,7 @@ def main():
         comandos = file.read()
 
     teste = sqlParser(comandos)
-    # teste.printTokens()
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,11 @@
-from sqlAlphabet import getAlphabet
-from sqlReserveds import getReserveds
-from sqlTipos import getTipos
+def getAlphabet():
+    return "\nabcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789()[],;*="
+
+def getReserveds():
+    return ['CREATE', 'DATABASE', ';', 'USE', 'TABLE', '(', ')', ',', 'VALUES', '*', 'INSERT', 'INTO', 'SELECT', 'FROM', 'ORDER', 'BY', 'WHERE', '=', 'UPDATE', 'SET', 'DELETE', 'TRUNCATE', 'TABLE']
+
+def getTipos():
+    return ["TEXT", "CHAR", "VARCHAR", "INT", "BIT" "BINARY", "DATETIME", "FLOAT", "DOUBLE", "DECIMAL", "DATE", "TIME"]
 
 class sqlParser():
     tokens = []
@@ -61,7 +66,7 @@ class sqlParser():
         
     def parser(self, tokens):
         self.init()
-        print("reconhecido")
+        print("Entrada Reconhecida")
 
     def init(self):
         self.token = self.getToken()
