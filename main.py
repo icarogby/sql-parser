@@ -1,7 +1,11 @@
 from sqlParser import sqlParser
 
 def main():
-    teste = sqlParser("create table top (nome VARCHAR);")
+    with open ("comandos.txt", "r") as file:
+        comandos = file.read()
+
+    teste = sqlParser(comandos)
+    # teste.printTokens()
 
 if __name__ == "__main__":
     main()

@@ -36,7 +36,7 @@ class sqlParser():
                     reading = False
 
             else:
-                if word[i] == " ":
+                if word[i] == " " or word[i] == "\n":
                     pass
                 elif word[i] in "=*()[],;":
                     self.tokens.append(word[i])
@@ -347,4 +347,6 @@ class sqlParser():
             raise Exception("valor expected")
 
     def printTokens(self):
-        print(self.tokens)
+        for token in self.tokens:
+            if token != "$":
+                print(token)
