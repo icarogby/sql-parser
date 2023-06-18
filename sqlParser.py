@@ -45,9 +45,7 @@ class sqlParser():
                     begin = i
 
         self.tokens.append("$")
-        self.printTokens()
         self.parser(self.tokens)
-
 
     def getToken(self) -> str:
         self.i += 1
@@ -60,8 +58,7 @@ class sqlParser():
     def parser(self, tokens):
         self.init()
         print("reconhecido")
-    
-    # DISGRAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
     def init(self):
         self.token = self.getToken()
 
@@ -79,11 +76,129 @@ class sqlParser():
             self.create()
             self.init()
 
+        elif self.token == "UPDATE":
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "SET":
+                raise Exception("SET expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "=":
+                raise Exception("= expected")
+
+            self.VALOR()
+
+            self.token = self.getToken()
+            if self.token != "WHERE":
+                raise Exception("WHERE expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "=":
+                raise Exception("= expected")
+            
+            self.VALOR()
+
+            self.token = self.getToken()
+            if self.token != ";":
+                raise Exception("; expected")
+            
+            self.init()
+
+        elif self.token == "DELETE":
+            self.token = self.getToken()
+            if self.token != "FROM":
+                raise Exception("FROM expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "WHERE":
+                raise Exception("WHERE expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "=":
+                raise Exception("= expected")
+            
+            self.VALOR()
+
+            self.token = self.getToken()
+            if self.token != ";":
+                raise Exception("; expected")
+            
+            self.init()
+
+        elif self.token == "TRUNCATE":
+            self.token = self.getToken()
+            if self.token != "TABLE":
+                raise Exception("TABLE expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != ";":
+                raise Exception("; expected")
+            
+            self.init()
+        
+        elif self.token == "INSET":
+            self.token = self.getToken()
+            if self.token != "INTO":
+                raise Exception("INTO expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "(":
+                raise Exception("( expected")
+            
+            self.listaDeId()
+
+            self.token = self.getToken()
+            if self.token != "VALUES":
+                raise Exception("VALUES expected")
+            
+            self.listaDeListaDeValor()
+
+            self.init()
+
+        elif self.token == "SELECT":
+            self.token = self.getToken()
+
+            if self.token == "*":
+                self.asterisco()
+
+                self.init()
+            
+            elif not (self.token[0].isdigit() or self.token.isdigit() or (self.token in self.reserveds)):
+                self.token = self.getToken()
+                if self.token == ",":
+                    self.listaDeIdAberta()
+
+                if self.token != "FROM":
+                    raise Exception("FROM expected")
+                
+                self.ID()
+
+                self.token = self.getToken()
+                if self.token != ";":
+                    raise Exception("; expected")
+                
+                self.init()
+            else:
+                raise Exception("* or id expected")
+
         elif self.token == "$":
             pass
 
         else:
-            raise Exception("USE or CREATE expected")
+            raise Exception("SELECT, USE, CREATE, UPDATE, DELETE, TRUNCATE or INSERT expected")
     
     def create(self):
         self.token = self.getToken()
@@ -96,7 +211,7 @@ class sqlParser():
             if self.token != "(":
                 raise Exception("( expected")
             
-            self.createTable()
+            self.listaDeTipos()
 
             self.token = self.getToken()
 
@@ -113,18 +228,102 @@ class sqlParser():
         else:
             raise Exception("TABLE or DATABASE expected")
     
-    def createTable(self):
+    def listaDeTipos(self):
         self.ID()
         self.TIPO()
 
         self.token = self.getToken()
 
         if self.token == ",":
-            self.createTable()
+            self.listaDeTipos()
 
         elif self.token != ")":
             raise Exception(") expected")
+        
+    def listaDeId(self):
+        self.ID()
 
+        self.token = self.getToken()
+
+        if self.token == ",":
+            self.listaDeId()
+        
+        elif self.token != ")":
+            raise Exception(") expected")
+        
+    def listaDeIdAberta(self):
+        self.ID()
+
+        self.token = self.getToken()
+
+        if self.token == ",":
+            self.listaDeIdAberta()
+        
+    def listaDeValor(self):
+        self.VALOR()
+
+        self.token = self.getToken()
+
+        if self.token == ",":
+            self.listaDeValor()
+        
+        elif self.token != ")":
+            raise Exception(") expected")
+        
+    def listaDeListaDeValor(self):
+        self.token = self.getToken()
+        if self.token != "(":
+            raise Exception("( expected")
+        
+        self.listaDeValor()
+
+        self.token = self.getToken()
+
+        if self.token == ",":
+            self.listaDeListaDeValor()
+
+        elif self.token != ";":
+            raise Exception("; expected")
+        
+    def asterisco(self):
+        self.token = self.getToken()
+
+        if self.token != "FROM":
+            raise Exception("FROM expected")
+        
+        self.ID()
+
+        self.token = self.getToken()
+
+        if self.token == ";":
+            pass
+        elif self.token == "WHERE":
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != "=":
+                raise Exception("= expected")
+            
+            self.VALOR()
+
+            self.token = self.getToken()
+            if self.token != ";":
+                raise Exception("; expected")
+            
+        elif self.token == "ORDER":
+            self.token = self.getToken()
+            if self.token != "BY":
+                raise Exception("BY expected")
+            
+            self.ID()
+
+            self.token = self.getToken()
+            if self.token != ";":
+                raise Exception("; expected")
+
+        else:
+            raise Exception(";, WHERE or ORDER expected")
+        
     def ID(self):
         self.token = self.getToken()
 
@@ -135,9 +334,13 @@ class sqlParser():
         self.token = self.getToken()
 
         if self.token not in self.tipos:
-            raise Exception("INT or VARCHAR expected")
+            raise Exception("INT or VARCHAR expected") #TODO mudar tipos
+        
+    def VALOR(self):
+        self.token = self.getToken()
+
+        if not self.token.isdigit():
+            raise Exception("valor expected")
 
     def printTokens(self):
         print(self.tokens)
-    
-top = sqlParser("CREATE TABLE id (top INT, ferias VARCHAR); CREATE DATABASE id; USE rayray;")
