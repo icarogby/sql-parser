@@ -1,2 +1,2 @@
 def getTipos():
-    return ["INT", "VARCHAR"]
+    return ["TEXT", "CHAR", "VARCHAR", "INT", "BIT" "BINARY", "DATETIME", "FLOAT", "DOUBLE", "DECIMAL", "DATE", "TIME"]

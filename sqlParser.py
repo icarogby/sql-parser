@@ -45,6 +45,10 @@ class sqlParser():
                     begin = i
 
         self.tokens.append("$")
+
+        for i in range(len(self.tokens)):
+            self.tokens[i] = self.tokens[i].upper()
+        
         self.parser(self.tokens)
 
     def getToken(self) -> str:
@@ -147,7 +151,7 @@ class sqlParser():
             
             self.init()
         
-        elif self.token == "INSET":
+        elif self.token == "INSERT":
             self.token = self.getToken()
             if self.token != "INTO":
                 raise Exception("INTO expected")
