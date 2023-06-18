@@ -1,6 +1,5 @@
 CREATE
 DATABASE
-<id>
 ;
 USE
 TABLE
@@ -10,7 +9,6 @@ TABLE
 [
 ]
 ,
-<valor>
 VALUES
 *
 INSERT
